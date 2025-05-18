@@ -1,6 +1,12 @@
-# PlanetaryRetrogradeTravel
+# UnlimitedFirepower
+2D太空射击游戏，玩家将不断讨伐宇宙中强大的星系势力，掠夺他们的资源来强化自身。
 
-2D太空射击游戏，玩家将操控战机探索宇宙星系。并且需在所有星系彻底坍缩毁灭前带领地球到达宇宙传送通道，完成逃逸。
+## 快速启动 
+克隆仓库（含LFS大文件）  
+git clone --recurse-submodules https://github.com/lonepersonone/UnlimitedFirepower.git  
+cd UnlimitedFirepower  
+git lfs install    # 初始化LFS（首次必选）  
+git lfs pull       # 拉取模型/纹理资源  
 
 
 ## 1.0 版本计划
@@ -13,13 +19,6 @@
 
 ### 肉鸽升级
 实现玩家战机强化系统，通过消灭敌方获得升级点数，从而强化基础攻击。
-
-### 大逃杀
-宇宙每经过一段时间，都会探索毁灭一部分星系，毁灭前会进行揭示提醒。玩家需要提前到达安全星系范围，否则将会直接游戏失败。
-
-### 地球军工
-地球拥有极高的科技，只需要为地球提供足够的矿产资源，它就可以为玩家制造各种各样强力的装备，甚至是打造独特的太空战舰。
-
 
 ## 2.0 版本计划
 
