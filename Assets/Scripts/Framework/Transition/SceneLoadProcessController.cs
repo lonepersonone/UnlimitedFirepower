@@ -364,9 +364,10 @@ namespace MyGame.Framework.Transition
 
         // 检查场景中的关键系统是否已初始化
         private bool CheckCriticalSystems(UnityScene scene)
-        {
+        {                       
             // 这里可以添加具体的检查逻辑
             // 例如：查找场景中的关键管理器组件是否已激活
+            if (!scene.IsValid()) return false;
 
             GameObject[] rootObjects = scene.GetRootGameObjects();
             foreach (GameObject root in rootObjects)
@@ -374,11 +375,14 @@ namespace MyGame.Framework.Transition
                 // 示例：检查是否存在特定的管理器
                 if (root.GetComponent<GameSystemBase>() != null)
                 {
-                    return true;
+                    Debug.Log($"检测 {root.name} 加载状态");
+
+                    if (!root.GetComponent<GameSystemBase>().IsReady)
+                        return false;
                 }
             }
 
-            return false;
+            return true;
         }
 
         #endregion

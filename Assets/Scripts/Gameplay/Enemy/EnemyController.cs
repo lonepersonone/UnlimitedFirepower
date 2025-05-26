@@ -76,10 +76,12 @@ namespace MyGame.Gameplay.Enemy
             wealthComponentE.CreateWealth();
             //TriggerBehaviors(BehaviorType.Splite);
             minimapComponentE.DestroyMinimapIcon();
+
+            AudioHelper.PlayOneShot(gameObject, AudioIDManager.GetAudioID(Framework.Audio.AudioType.Enemy, AudioAction.Explode), transform.position);
+
             LevelManager.Instance.ReduceEnemy(this.gameObject);
 
-            RecordDataManager.Instance.UpdateEnemiesKilled(1);
-            AudioManager.Instance.PlayEnemyExplosion();
+            RecordDataManager.Instance.UpdateEnemiesKilled(1);           
         }
 
         public void SetState(IEnemyState state)

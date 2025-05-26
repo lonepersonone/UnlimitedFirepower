@@ -13,14 +13,14 @@ namespace MyGame.Gameplay.Player
     [RequireComponent(typeof(MoveComponent))]
     [RequireComponent(typeof(HealthComponent))]
     [RequireComponent(typeof(ShieldComponent))]
-    [RequireComponent(typeof(RebirthComponent))]
     [RequireComponent(typeof(CircleCollider2D))]
     [RequireComponent(typeof(RaycastComponent))]
+    [RequireComponent(typeof(RebirthComponent))]
+    [RequireComponent(typeof(DieComponent))]
     [RequireComponent(typeof(CinemachineCollisionImpulseSource))]
     public class PlayerController : MonoBehaviour
     {
         public static PlayerController Instance;
-
         private CharacterAttribute characterData;
         private List<IAirplaneComponent> airplaneComponents = new List<IAirplaneComponent>();
 

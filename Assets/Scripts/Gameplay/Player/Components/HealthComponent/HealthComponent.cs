@@ -1,5 +1,8 @@
+using Cinemachine;
 using Michsky.UI.Reach;
+using MyGame.Framework.Audio;
 using MyGame.Framework.Event;
+using MyGame.Gameplay.Effect;
 using MyGame.Gameplay.Weapon;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +12,7 @@ namespace MyGame.Gameplay.Player
 {
     public class HealthComponent : MonoBehaviour, IAirplaneComponent, IBulletDamageable, IExplosionDamageable
     {
-        private CharacterAttribute data;
-
+        private CharacterAttribute data; 
         private ProgressBar healthBar;
         private ShieldComponent shieldComponent;
 
@@ -32,6 +34,8 @@ namespace MyGame.Gameplay.Player
             lastHealth = data.Health;
 
             if (transform.GetComponent<ShieldComponent>() != null) shieldComponent = transform.GetComponent<ShieldComponent>();
+
+            GameEventManager.RegisterListener(GameEventType.PlayerReset, ResetHealth);
         }
 
         public void UpdateComponent()
@@ -41,6 +45,11 @@ namespace MyGame.Gameplay.Player
                     RecoverHealth();
 
             if (lastHealth != data.Health) ResetHealth();
+        }
+
+        private void OnDestroy()
+        {
+            GameEventManager.UnregisterListener(GameEventType.PlayerReset, ResetHealth);
         }
 
         public void RecoverHealth()
@@ -54,11 +63,18 @@ namespace MyGame.Gameplay.Player
         {
             lastDamageTime = Time.time;
 
+            damage *= (1 - data.DamageReduction);
+
             if (shieldComponent.CurrentShield <= 0)
-            {
-                if (currentHealth <= damage) GameEventManager.TriggerEvent(GameEventType.PlayerRebirth);
+            {                 
                 currentHealth -= damage;
                 healthBar.SetValue(Mathf.Clamp(currentHealth, 0, data.Health));
+
+                if (currentHealth <= 0)
+                {
+                    GetComponent<RebirthComponent>().Rebirth();
+                    return;
+                }
             }
         }
 
@@ -69,8 +85,9 @@ namespace MyGame.Gameplay.Player
             healthBar?.SetValue(Mathf.Clamp(currentHealth, 0, data.Health));
             lastHealth = data.Health;
         }
-
+      
     }
+
 }
 
 

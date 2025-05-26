@@ -1,4 +1,5 @@
 using MyGame.Framework.Event;
+using MyGame.Framework.Notification;
 using MyGame.Gameplay.Effect;
 using MyGame.Scene.Main;
 using System;
@@ -40,6 +41,8 @@ namespace MyGame.Gameplay.Map
             EffectManager.Instance.PlayEffect(EffectLibraryManager.GetEffect("SpawnSpaceShip"), transform.position);
             MainCameraManager.Instance.SetObserverCamera(transform);
             MainCameraManager.Instance.SelectCamera(CameralType.Observer);
+
+            NotificationManager.Instance.ShowFeedNotification("LevelStarted");
         }
 
         private void Arrival()

@@ -1,3 +1,4 @@
+using MyGame.Framework.Audio;
 using MyGame.Framework.Record;
 using MyGame.Gameplay.Weapon;
 using System.Collections;
@@ -10,7 +11,6 @@ namespace MyGame.Gameplay.Enemy
     {
         private EnemyController enemy;
         private float currentHealth;
-
 
         public void Initialize(EnemyController enemy)
         {
@@ -31,7 +31,11 @@ namespace MyGame.Gameplay.Enemy
             if (type == DamageType.Basics) enemy.DynamicTextComponentE.CreateBasicsDynamicText(damage);
             else if (type == DamageType.Critical) enemy.DynamicTextComponentE.CreateCriticalDynamicText(damage);
 
-            if (currentHealth < damage) enemy.Die();
+            if (currentHealth < damage)
+            {
+                enemy.Die();
+            }
+                
             currentHealth -= damage;            
         }
 

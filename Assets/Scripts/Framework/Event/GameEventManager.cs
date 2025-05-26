@@ -9,41 +9,44 @@ namespace MyGame.Framework.Event
     {
         None,
 
+        // 场景行为
         SceneLoadStarted,
         SceneLoadCompleted,
 
+        // 游戏开始
         GameStarted,
         GamePaused,
         GameResumed,
         GameOver,
 
+        // 切换星系
         LevelStarted,
         LevelCompleted,
         LevelFailed,
+        LevelChange,
 
-        RoundChange,
-
+        // 进入关卡战斗
         BattleInitial,
         BattleStarted,
         BattleEnded,
+        BattleWined,
+        BattleFailed,
 
+        // 玩家行为
         PlayerDied,
         PlayerRespawned,
-        PlayerRebirth,
         PlayerReset,
-
-        PlanetConquered,
-
-        EnemyKilled,
         ItemCollected,
         PowerupActivated,
-        ReturnedToMainScene,
 
+        // 敌人行为
+        EnemyKilled,
+     
+        // 场景行为
         ScaleCamera,
         SpawnUI,
 
-        MainSceneUISpawned,
-
+        // 隐藏游戏对象
         SceneObjectInitial,
         SceneObjectShow,
         SceneObjectHide,

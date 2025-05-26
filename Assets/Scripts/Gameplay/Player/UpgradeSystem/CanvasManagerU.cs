@@ -47,6 +47,8 @@ namespace MyGame.Gameplay.Upgrade
             CloseButton.onClick.AddListener(Close);
 
             await Task.Delay(100);
+
+            IsReady = true;
         }
 
         void Update()

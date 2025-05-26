@@ -30,7 +30,7 @@ namespace MyGame.Gameplay.Enemy
 
         protected int RaycastNonAlloc()
         {
-            return Physics2D.RaycastNonAlloc(transform.position, transform.forward, rayHits, 0.5f, LayerMask.GetMask("Player", "UAV"));
+            return Physics2D.RaycastNonAlloc(transform.position, transform.forward, rayHits, 2f, LayerMask.GetMask("Player", "UAV"));
         }
     }
 }

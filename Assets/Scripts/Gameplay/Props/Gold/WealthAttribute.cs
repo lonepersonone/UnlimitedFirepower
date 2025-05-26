@@ -25,15 +25,15 @@ namespace MyGame.Gameplay.Prop
         private int totalEarnings;
         private int expectEarnings;
         private int depositLimit1 = 1000;
-        private int depositLimit2 = 5000;
-        private int depositLimit3 = 10000;
+        private int depositLimit2 = 10000;
+        private int depositLimit3 = 20000;
         private int depositLimit4 = 50000;
         private int depositLimit5 = 100000;
-        private float interestRate1 = 0.1f;
-        private float interestRate2 = 0.15f;
-        private float interestRate3 = 0.2f;
-        private float interestRate4 = 0.3f;
-        private float interestRate5 = 0.4f;
+        private float interestRate1 = 0.01f;
+        private float interestRate2 = 0.05f;
+        private float interestRate3 = 0.1f;
+        private float interestRate4 = 0.15f;
+        private float interestRate5 = 0.2f;
 
         private WealthSpawnData wealthSpawnData;
 
@@ -52,8 +52,7 @@ namespace MyGame.Gameplay.Prop
             WealthDataSO so = scriptable.GetWealthById("Basic");
             wealthSpawnData = new WealthSpawnData(so.WealthPrefab, so.WealthData);
 
-            maxWealth = 999999;
-            currentWealth = 999999;
+            currentWealth = 10000;
         }
 
         public float[] AddUltimateWealth(int value)

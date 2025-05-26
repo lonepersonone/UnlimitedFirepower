@@ -28,7 +28,7 @@ namespace MyGame.Framework.Transition
         protected override void OnReady()
         {
 
-            GameEventManager.TriggerEvent(GameEventType.PlanetConquered);
+            GameEventManager.TriggerEvent(GameEventType.BattleWined);
         }
     }
 

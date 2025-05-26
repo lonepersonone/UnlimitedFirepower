@@ -32,7 +32,7 @@ namespace MyGame.Gameplay.Map
         public ProgressBar RoundProgressBar;
         public TextMeshProUGUI GalaxyName;
 
-        private int basicStep = 5;
+        private int basicStep = 16;
         private int currentStep = 0;
 
         public int CurrentStep => currentStep;
@@ -50,12 +50,6 @@ namespace MyGame.Gameplay.Map
             }
         }
 
-        private void OnDestroy()
-        {
-            GameEventManager.UnregisterListener<PlanetController>(GameEventType.RoundChange, EnterNextRound);
-            GameEventManager.UnregisterListener(GameEventType.LevelStarted, CreateNextGalaxy);
-        }
-
         public override async Task InitializeAsync(Action<float> onProgress = null)
         {
             currentStep = basicStep;
@@ -64,13 +58,19 @@ namespace MyGame.Gameplay.Map
             RoundProgressBar.SetValue(currentStep);
 
             LocalizationManager.instance.switchLanguageAction += LocalizeGalaxyName;
+            
+            GameEventManager.RegisterListener(GameEventType.LevelStarted, GenerateNextGalaxy);
 
-            LocalizeGalaxyName(LocalizationManager.instance.currentLanguage);
-
-            GameEventManager.RegisterListener<PlanetController>(GameEventType.RoundChange, EnterNextRound);
-            GameEventManager.RegisterListener(GameEventType.LevelStarted, CreateNextGalaxy);
+            GenerateNextGalaxy();
 
             await Task.Delay(100);
+
+            IsReady = true;
+        }
+
+        private void OnDestroy()
+        {
+            GameEventManager.UnregisterListener(GameEventType.LevelStarted, GenerateNextGalaxy);
         }
 
         public void ResetStep()
@@ -78,7 +78,7 @@ namespace MyGame.Gameplay.Map
             currentStep = basicStep;
             RoundProgressBar.SetValue(currentStep);
 
-            LocalizeGalaxyName(LocalizationManager.instance.currentLanguage);
+            if (LocalizationManager.instance != null) LocalizeGalaxyName(LocalizationManager.instance.currentLanguage);
         }
 
         public bool ReduceStep(int value)
@@ -93,17 +93,21 @@ namespace MyGame.Gameplay.Map
             }
         }
 
-        public void EnterNextRound(PlanetController planet)
+        // 执行切换行为
+        public void ChangeGalaxy()
         {
-            if (currentStep == 0 || planet.GetPlanetType() == HexCellType.Channel)
-            {
-                SceneController.Instance.EnterNextGalaxy();
-            }            
+            SceneController.Instance.EnterNextGalaxy();
         }
 
-        private void CreateNextGalaxy()
+        public bool CanChangeGalaxy(PlanetController planet)
         {
-            GalaxyAttribute galaxyAttribute = MainDataManager.Instance.MapData.EnableNextGalay();
+            return currentStep == 0 || planet.GetPlanetType() == HexCellType.Channel;
+        }
+
+        // 创建星系数据
+        private void GenerateNextGalaxy()
+        {
+            GalaxyAttribute galaxyAttribute = MainDataManager.Instance.MapData.GenerateNextGalay();
 
             if (galaxyAttribute != null)
             {
@@ -125,11 +129,13 @@ namespace MyGame.Gameplay.Map
             //Debug.Log(value);
             if(value.Contains("en-US"))
             {
-                SetGalaxyName(MainDataManager.Instance.MapData.CurrentGalxy.EN);
+                if(MainDataManager.Instance.MapData.CurrentGalxy != null)
+                    SetGalaxyName(MainDataManager.Instance.MapData.CurrentGalxy.EN);
             }
             else if(value.Contains("cn-CN"))
             {
-                SetGalaxyName(MainDataManager.Instance.MapData.CurrentGalxy.CN);
+                if (MainDataManager.Instance.MapData.CurrentGalxy != null)
+                    SetGalaxyName(MainDataManager.Instance.MapData.CurrentGalxy.CN);
             }
         }
 

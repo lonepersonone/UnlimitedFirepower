@@ -20,6 +20,8 @@ namespace MyGame.Scene.Main
     {
         public static MainDataManager Instance;
 
+       [SerializeField] private GameMapConfigSO GameMapConfig;
+
         // ScriptableObject Êý¾Ý
         private ScriptableManager scriptableManager;
 
@@ -50,6 +52,10 @@ namespace MyGame.Scene.Main
             await CreateData();
 
             LogicInitializer.InitialLogic(this);
+
+            await Task.Delay(100);
+
+            IsReady = true;
         }
 
         private async Task CreateData()
@@ -57,7 +63,7 @@ namespace MyGame.Scene.Main
             playerData = new PlayerAttribute(scriptableManager);
             upgradeData = new UpgradeAttribute(scriptableManager);
             wealthData = new WealthAttribute(scriptableManager);
-            mapData = new MapAttribute(scriptableManager);
+            mapData = new MapAttribute(GameMapConfig);
 
             await Task.Delay(100);
         }

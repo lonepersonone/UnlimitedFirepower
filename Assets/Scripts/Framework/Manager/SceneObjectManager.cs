@@ -34,6 +34,8 @@ public class SceneObjectManager : GameSystemBase
         GameEventManager.RegisterListener(GameEventType.SceneObjectHide, HideMainSceneObjects);
 
         await Task.Delay(100);
+
+        IsReady = true;
     }
 
     private void OnDestroy()

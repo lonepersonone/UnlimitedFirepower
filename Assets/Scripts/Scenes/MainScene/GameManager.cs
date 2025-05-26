@@ -28,18 +28,19 @@ namespace MyGame.Scene.Main
             }           
         }
 
-        private void OnEnable()
+        private void Start()
         {
             GameEventManager.RegisterListener(GameEventType.SpawnUI, OnSpawnUI);
             GameEventManager.RegisterListener(GameEventType.ScaleCamera, OnScaleCamera);
+            GameEventManager.RegisterListener(GameEventType.GameStarted, PlaySound);
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             GameEventManager.ClearListener(GameEventType.SpawnUI);
             GameEventManager.ClearListener(GameEventType.ScaleCamera);
+            GameEventManager.ClearListener(GameEventType.GameStarted);
         }
-
 
         private void Update()
         {
@@ -58,7 +59,6 @@ namespace MyGame.Scene.Main
 
         public void ReturnToLobby()
         {
-            GameEventManager.ClearAllListeners();
             if (SceneController.Instance != null) SceneController.Instance.ReturnToLobby();
         }
 
@@ -70,6 +70,11 @@ namespace MyGame.Scene.Main
         private void OnScaleCamera()
         {
             MainCameraManager.Instance.ScaleCamera();
+        }
+
+        public void PlaySound()
+        {
+            AudioHelper.PlayOneShot(gameObject, AudioIDManager.GetAudioID(Framework.Audio.AudioType.Scene, AudioAction.Profound));
         }
 
     }

@@ -22,7 +22,7 @@ namespace MyGame.Gameplay.Enemy
 
         public bool CanAttack()
         {
-            return Time.time - lastAttackTime >= enemy.CharacterData.WeaponData.FireRate;
+            return Time.time - lastAttackTime >= enemy.CharacterData.WeaponData.AttackInterval;
         }
 
         public void RecordAttackTime()

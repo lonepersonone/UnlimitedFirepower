@@ -34,10 +34,7 @@ namespace MyGame.Framework.Transition
             SceneTransitionFactory.RegisterHandlerFactory("MainSceneE", () => new MainSceneTransitionHandlerE());
             SceneTransitionFactory.RegisterHandlerFactory("BattleScene", () => new BattleSceneTransitionHandler());
             SceneTransitionFactory.RegisterHandlerFactory("GalaxySceneE", () => new GalaxySceneTransitionHandlerE());
-
-            //SceneTransitionFactory.RegisterHandlerFactory("LobbyScene", () => new LobbySceneTransitionHandler());
-            //SceneTransitionFactory.RegisterHandlerFactory("LevelScene", () => new LevelSceneTransitionHandler());
-            //`SceneTransitionFactory.RegisterHandlerFactory("MapScene", () => new MapSceneTransitionHandler());
+            SceneTransitionFactory.RegisterHandlerFactory("LobbyScene", () => new LobbySceneTransitionHandler());
         }
 
         // 加载场景方法

@@ -15,10 +15,10 @@ namespace MyGame.Gameplay.Map
 
         private List<PlanetController> planets = new List<PlanetController>();
         private Dictionary<string, PlanetController> planetDict = new Dictionary<string, PlanetController>();
-        private PlanetDataSO[] planetSOs;
+        private List<PlanetData> planetDatas;
         private List<PlanetController> birthPlanets = new List<PlanetController>(); 
         private PlanetController currentPlanet;
-        private GalaxyDataSO galaxyData;
+        private GalaxyData galaxyData;
 
         public string EN => enName;
         public string CN => cnName;
@@ -28,23 +28,25 @@ namespace MyGame.Gameplay.Map
         public Dictionary<string, PlanetController> PlanetDict => planetDict;
         public List<PlanetController> BirthPlanets => birthPlanets;
 
-        public GalaxyAttribute(GalaxyDataSO so)
+        public GalaxyAttribute(GalaxyData data)
         {
-            this.galaxyData = so;
-            planetSOs = so.PlanetDataSOs;
+            this.galaxyData = data;
 
-            range = so.Range;
-            id = so.ID;
+            planetDatas = data.Planets;
+
+            range = data.Range;
+            id = data.ID;
 
             PowerName powerName = GalaxyNameGenerator.Instance.GetPowerName();
             enName = powerName.englishName;
             cnName = powerName.chineseName;
         }
 
-        public GalaxyAttribute CreateGalaxy()
+        public GalaxyAttribute Generate()
         {
             CreateBasicPlanets();
             CreateBirthPlanets();
+            SetPlanetsWealth();
             return this;
         }
 
@@ -70,7 +72,7 @@ namespace MyGame.Gameplay.Map
 
         private void CreateCenter(int q, int r)
         {
-            GameObject instance = Object.Instantiate(galaxyData.TransferPrefab);
+            GameObject instance = Object.Instantiate(galaxyData.TransferPlanets[0].PlanetPrefab);
 
             PlanetController planet = instance.GetComponent<PlanetController>();
             planet.Initialize(q, r, null);
@@ -79,18 +81,58 @@ namespace MyGame.Gameplay.Map
             planet.SetType(HexCellType.Channel);
 
             planetDict[planet.LocationID] = planet;
-
-            // 显示特效
-            EffectManager.Instance.PlayEffect(EffectLibraryManager.GetEffect("Center"), instance.transform, Vector3.zero, Quaternion.EulerAngles(90, 0, 0));
         }
+
+        private void SetPlanetsWealth()
+        {
+            List<PlanetController> planetsClone = new List<PlanetController>();
+            planetsClone.AddRange(planets);
+
+            // 设置特殊星球财富值
+            for(int i = 0; i < galaxyData.SpecialPlanetsCount; i++)
+            {
+                int seed = Random.Range(0, planetsClone.Count);
+                int factorSeed = Random.Range(0, galaxyData.SpecialFactor.Count);
+                PlanetController planet = planetsClone[seed];
+
+                // 二次生成
+                int[] id = planet.GetIDByInt();
+                planets.Remove(planet);
+                planetDict.Remove(planet.LocationID);
+                Object.Destroy(planet.gameObject);
+
+                int specialSeed = Random.Range(0, galaxyData.SpecialPlanets.Count);
+                PlanetData specialData = galaxyData.SpecialPlanets[specialSeed];
+
+                GameObject instance = Object.Instantiate(specialData.PlanetPrefab);
+                PlanetController specialPlanet = instance.GetComponent<PlanetController>();
+                specialPlanet.Initialize(id[0], id[1], specialData.Level);
+                specialPlanet.GalaxyID = galaxyData.ID;
+                specialPlanet.SetWealth((int)(galaxyData.WealthValue * galaxyData.SpecialFactor[factorSeed]));
+                specialPlanet.SetType(HexCellType.Life);
+                specialPlanet.OnExplored();
+
+                planets.Add(specialPlanet);
+                planetDict[specialPlanet.LocationID] = specialPlanet;
+
+                planetsClone.Remove(planet);
+            }
+
+            // 设置普通星球财富值
+            foreach(var planet in planetsClone)
+            {
+                float factor = Random.Range( 1 - galaxyData.BaseWealthFactor, 1 + galaxyData.BaseWealthFactor);
+                planet.SetWealth((int)(galaxyData.WealthValue * factor));
+            }
+        } 
 
         private PlanetController CreateCell(int q, int r)
         {
-            PlanetDataSO so = GetRandomPlanet();
+            PlanetData planetData = GetRandomPlanet();
 
-            GameObject instance = Object.Instantiate(so.PlanetPrefab);
+            GameObject instance = Object.Instantiate(planetData.PlanetPrefab);
             PlanetController planet = instance.GetComponent<PlanetController>();
-            planet.Initialize(q, r, so.Level);
+            planet.Initialize(q, r, planetData.Level);
             planet.GalaxyID = galaxyData.ID;
             planet.SetType(HexCellType.Life);
 
@@ -114,21 +156,17 @@ namespace MyGame.Gameplay.Map
 
         private void CreateTransferCell(int q, int r)
         {            
-            GameObject instance = Object.Instantiate(galaxyData.TransferPrefab);
+            GameObject instance = Object.Instantiate(galaxyData.TransferPlanets[1].PlanetPrefab);
 
             PlanetController planet = instance.GetComponent<PlanetController>();
             planet.Initialize(q, r, null);
             planet.GalaxyID = galaxyData.ID;
             planet.OnExplored();
             planet.SetType(HexCellType.Channel);
-
-            // 显示特效
-            EffectManager.Instance.PlayEffect(EffectLibraryManager.GetEffect("Channel"), instance.transform, Vector3.zero, Quaternion.EulerAngles(90, 0 ,0));
-
             birthPlanets.Add(planet);
         }
 
-        public void DestoryMap()
+        public void Destory()
         {
             for (int i = 0; i < planets.Count; i++)
             {
@@ -159,14 +197,14 @@ namespace MyGame.Gameplay.Map
             return Vector3.zero;
         }
 
-        private PlanetDataSO GetRandomPlanet()
+        private PlanetData GetRandomPlanet()
         {
             float value = Random.Range(0, 1);
             float cumulativeProbability = 0;
-            for (int i = 0; i < planetSOs.Length; i++)
+            for (int i = 0; i < planetDatas.Count; i++)
             {
-                cumulativeProbability += planetSOs[i].Ratio;
-                if (value <= cumulativeProbability) return planetSOs[i];
+                cumulativeProbability += planetDatas[i].Ratio;
+                if (value <= cumulativeProbability) return planetDatas[i];
             }
             return null;
         }

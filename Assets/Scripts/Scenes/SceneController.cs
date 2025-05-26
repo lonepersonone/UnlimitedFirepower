@@ -58,16 +58,10 @@ public class SceneController : MonoBehaviour
     // 从主场景返回大厅
     public void ReturnToLobby()
     {
-        if (currentSceneName == battleSceneName)
+        MySceneManager.Instance.LoadScene("LobbyScene", true, () =>
         {
-            // 如果当前在战斗场景，先卸载战斗场景
-            DynamicSceneManager.Instance.UnloadScene(battleSceneName, OnBattleSceneUnloadedForLobby);
-        }
-        else
-        {
-            // 直接加载大厅场景
-            LoadScene(lobbySceneName);
-        }
+            Debug.Log("已成功进入大厅场景");
+        });
     }
 
     // 从主场景进入战斗场景
@@ -78,13 +72,6 @@ public class SceneController : MonoBehaviour
         });
     }
 
-    // 角色在战斗中死亡，返回大厅
-    public void PlayerDiedInBattle()
-    {
-        // 卸载战斗场景，返回大厅
-        DynamicSceneManager.Instance.UnloadScene(battleSceneName, OnBattleSceneUnloadedForLobby);
-    }
-
     // 战斗胜利，返回主场景
     public void BattleVictory()
     {
@@ -93,41 +80,12 @@ public class SceneController : MonoBehaviour
         });
     }
 
-    private void OnBattleSceneUnloadedForLobby(string sceneName, string instanceId)
-    {
-        Debug.Log($"战斗场景 {sceneName} (ID: {instanceId}) 卸载完成，返回大厅");
-
-        // 加载大厅场景
-        LoadScene(lobbySceneName);
-    }
-
     public void EnterNextGalaxy()
     {
         MySceneManager.Instance.LoadScene("GalaxySceneE", true, () => {
             Debug.Log("进入下一星系");
         });
     }
-
-    #endregion
-
-    #region 辅助方法
-    private void LoadScene(string sceneName, System.Action callback = null)
-    {
-        DynamicSceneManager.Instance.LoadScene(sceneName,
-            (name, id) => {
-                Debug.Log($"场景 {name} 开始加载");
-            },
-            (name, id) => {
-                Debug.Log($"场景 {name} 加载完成");
-                currentSceneName = name;
-
-                if (callback != null)
-                {
-                    callback();
-                }
-            });
-    }
-
 
     #endregion
 

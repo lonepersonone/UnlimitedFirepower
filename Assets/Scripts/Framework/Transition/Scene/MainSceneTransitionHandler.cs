@@ -45,6 +45,7 @@ namespace MyGame.Framework.Transition
         protected override void OnReady()
         {
             GameEventManager.TriggerEvent(GameEventType.LevelCompleted);
+            GameEventManager.TriggerEvent(GameEventType.GameStarted);            
         }
 
     }

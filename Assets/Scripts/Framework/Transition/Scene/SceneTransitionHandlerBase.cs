@@ -57,7 +57,8 @@ namespace MyGame.Framework.Transition
 
         protected virtual IEnumerator OnLoadingData()
         {
-            yield return new WaitForSeconds(2f);
+            Debug.Log("‘›Õ£º”‘ÿ ˝æ›");
+            yield return new WaitForSecondsRealtime(2f);
         }
 
         protected virtual IEnumerator OnInitializing()

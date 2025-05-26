@@ -26,6 +26,9 @@ public class WeaponAttribute
     private float criticalRatio; //暴击倍率
     private float criticalProbability; //暴击概率
 
+    // 攻击速度系数（控制增长曲线）
+    private const float AttackSpeedCoefficient = 0.7f;
+
     private int multiOffset;
     private float fireRateOffset;
     private float damageOffset;
@@ -38,7 +41,8 @@ public class WeaponAttribute
 
     public GameObject WeaponPrefab => weaponPrefab;
     public GameObject ProjectilePrefab => projectilePrefab;
-    public float FireRate => fireRate + fireRateOffset;
+    public float AttackInterval => CalculateAttackInterval(fireRateOffset);
+    public float AttackSpeed => fireRate + fireRateOffset;
     public int MultiShot => multiShot + multiOffset;
     public float Damage => damage + damageOffset;
     public float Range => range + rangeOffset;
@@ -75,5 +79,28 @@ public class WeaponAttribute
     public void SetCriticalRatioOffset(float offset) { this.criticalRatioOffset = offset; }
     public void SetCriticalProbabilityOffset(float offset) { this.criticalProbabilityOffset = offset; }
 
+
+
+
+
+    // 根据攻击速度百分比计算实际攻击速度
+    private float CalculateAttackSpeed(float bonusAttackSpeedPercent)
+    {
+        // 确保输入不小于0
+        bonusAttackSpeedPercent = Mathf.Max(0f, bonusAttackSpeedPercent);
+
+        // 核心计算公式：基础攻速 × (1 + 加成系数 × 攻速百分比)
+        float attackSpeed = fireRate * (1f + AttackSpeedCoefficient * bonusAttackSpeedPercent);
+
+        // 确保最终攻速不低于基础攻速
+        return Mathf.Max(fireRate, attackSpeed);
+    }
+
+    // 计算攻击间隔（秒/次）
+    private float CalculateAttackInterval(float bonusAttackSpeedPercent)
+    {
+        float attackSpeed = CalculateAttackSpeed(bonusAttackSpeedPercent);
+        return 1f / attackSpeed;
+    }
 
 }

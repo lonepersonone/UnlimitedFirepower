@@ -21,6 +21,7 @@ namespace MyGame.Gameplay.Upgrade
                 else if (item.Id == "ThrusterRatio") item.RegistEvent(BattleDataManager.Instance.PlayerAttribute.ShipAttribute.SetThrusterRateOffset);
                 else if (item.Id == "Rebirth") item.RegistEvent(BattleDataManager.Instance.PlayerAttribute.ShipAttribute.SetRebirthRateOffset);
 
+
                 else if (item.Id == "WeaponAttenuation") item.RegistEvent(BattleDataManager.Instance.PlayerAttribute.ShipAttribute.WeaponData.SetAttenuationOffset);
                 else if (item.Id == "WeaponCriticalLuky") item.RegistEvent(BattleDataManager.Instance.PlayerAttribute.ShipAttribute.WeaponData.SetCriticalProbabilityOffset);
                 else if (item.Id == "WeaponCriticalRatio") item.RegistEvent(BattleDataManager.Instance.PlayerAttribute.ShipAttribute.WeaponData.SetCriticalRatioOffset);

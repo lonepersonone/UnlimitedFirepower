@@ -1,5 +1,6 @@
 using Michsky.UI.Reach;
 using MyGame.Framework.Event;
+using MyGame.Gameplay.Effect;
 using MyGame.Gameplay.Weapon;
 using System;
 using System.Collections;
@@ -11,6 +12,8 @@ namespace MyGame.Gameplay.Player
     public class ShieldComponent : MonoBehaviour, IAirplaneComponent, IBulletDamageable, IExplosionDamageable
     {
         private CharacterAttribute data;
+
+        [SerializeField] private GameObject ShieldObj;
 
         private ProgressBar shieldBar;
         private ProgressBar progressBar; //ÐîÁ¦Ìõ
@@ -35,6 +38,8 @@ namespace MyGame.Gameplay.Player
             progressBar = PlayerManager.Instance.ShieldProgressBar;
             progressBar.SetRange(0, 1);
             ResetProgress();
+
+            GameEventManager.RegisterListener(GameEventType.PlayerReset, ResetShield);
         }
 
         public void UpdateComponent()
@@ -44,6 +49,11 @@ namespace MyGame.Gameplay.Player
                     RecoverProgress();
 
             if (lastShield != data.Shield) ResetShield();
+        }
+
+        private void OnDestroy()
+        {
+            GameEventManager.UnregisterListener(GameEventType.PlayerReset, ResetShield);
         }
 
         private void ResetProgress()
@@ -64,6 +74,13 @@ namespace MyGame.Gameplay.Player
             ResetProgress();
             currentShield = data.Shield;
             shieldBar?.SetValue(currentShield);
+            ShieldObj.SetActive(true);
+        }
+
+        private void BrokenShield()
+        {
+            ShieldObj.SetActive(false);
+            EffectManager.Instance.PlayEffect(EffectLibraryManager.GetEffect("BrokenShield"), transform.position);
         }
 
         public void TakeDamage(DamageType type, float damage)
@@ -72,6 +89,7 @@ namespace MyGame.Gameplay.Player
             ResetProgress();
             if (currentShield > 0)
             {
+                if(currentShield <= damage) BrokenShield();
                 currentShield -= damage;
                 shieldBar?.SetValue(Mathf.Clamp(currentShield, 0, data.Shield));
             }

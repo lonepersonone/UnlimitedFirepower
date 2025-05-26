@@ -54,7 +54,6 @@ namespace MyGame.Gameplay.Map
 
             SetState(HexCellState.Hidden);
 
-            Wealth = UnityEngine.Random.Range(100, 1000);
             Difficulty = DifficultyType.Normal;
         }
 

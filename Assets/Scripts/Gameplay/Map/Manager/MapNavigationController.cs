@@ -54,6 +54,7 @@ namespace MyGame.Gameplay.Map
         {      
             string locationID = HexgonUtil.WorldToLocationID(pos);
 
+            // ¸üÐÂPlanet×´Ì¬
             galaxyAttribute.CurrentPlanet?.OnArrived(false);
             galaxyAttribute.SetCurrentPlanet(galaxyAttribute.PlanetDict[locationID]);
             galaxyAttribute.CurrentPlanet?.OnArrived(true);

@@ -20,7 +20,7 @@ namespace MyGame.Gameplay.Map
         private PlanetModel model;
         private PlanetViewModel viewModel;
 
-        public LevelDataSO LevelDataSO { get; private set; }
+        public LevelData LevelData { get; private set; }
 
 
         private void Awake()
@@ -39,7 +39,7 @@ namespace MyGame.Gameplay.Map
             }
         }
 
-        public void Initialize(int q, int r, LevelDataSO level)
+        public void Initialize(int q, int r, LevelData level)
         {
             // 创建模型
             model = new PlanetModel(
@@ -47,7 +47,7 @@ namespace MyGame.Gameplay.Map
 
             // 设置控制器属性
             LocationID = model.Key;
-            LevelDataSO = level;
+            LevelData = level;
 
             // 创建视图模型并连接各部分
             viewModel = new PlanetViewModel(model, view);
@@ -108,6 +108,11 @@ namespace MyGame.Gameplay.Map
         public HexCellType GetPlanetType()
         {
             return model.Type;
+        }
+
+        public int GetWealth()
+        {
+            return model.Wealth;
         }
     }
 }

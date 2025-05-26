@@ -1,6 +1,7 @@
 using Michsky.UI.Reach;
 using MyGame.Framework.Event;
 using MyGame.Framework.Manager;
+using MyGame.Framework.Notification;
 using MyGame.Gameplay.Effect;
 using MyGame.Scene.BattleRoom;
 using MyGame.UI;
@@ -68,6 +69,8 @@ namespace MyGame.Gameplay.Player
             PlayerExperienceManager.Instance.OnRankUp += HandleRankUp;
 
             await Task.Delay(100);
+
+            IsReady = true;
         }
 
         private void OnDestroy()
@@ -97,22 +100,20 @@ namespace MyGame.Gameplay.Player
         {
             MoveSpeedText.text = currentShip.GetComponent<MoveComponent>().CurrentSpeed.ToString();
             CoolTimeText.text = characterData.CoolTime.ToString();
-            ThrusterRatioText.text = characterData.ThrusterRate.ToString();
-            ThrusterDurationText.text = characterData.ThrusterDuration.ToString();
-            DamageReductionText.text = characterData.DamageReduction.ToString();
+            ThrusterRatioText.text = characterData.ThrusterRate.ToString("F2");
+            ThrusterDurationText.text = characterData.ThrusterDuration.ToString("F2");
+            DamageReductionText.text = characterData.DamageReduction.ToString("P1");
             DamageText.text = characterData.WeaponData.Damage.ToString();
-            CriticalProbabilityText.text = characterData.WeaponData.CriticalProbability.ToString();
-            CriticalRatioText.text = characterData.WeaponData.CriticalRatio.ToString();
+            CriticalProbabilityText.text = characterData.WeaponData.CriticalProbability.ToString("P1");
+            CriticalRatioText.text = characterData.WeaponData.CriticalRatio.ToString("P1");
             RangeText.text = characterData.WeaponData.Range.ToString();
-            FireRateText.text = characterData.WeaponData.FireRate.ToString();
-            AttenuationRatioText.text = characterData.WeaponData.AttenuationRatio.ToString();
+            FireRateText.text = characterData.WeaponData.AttackSpeed.ToString("F2");
+            AttenuationRatioText.text = characterData.WeaponData.AttenuationRatio.ToString("P1");
         }
 
         private void HandleRankUp(object sender, RankChangedEventArgs e)
         {
-            Debug.Log($"恭喜！升级到等级 {e.newRank}！");
            
-            // 显示自定义消息
             if (e.newRank < rankUpMessages.Length && !string.IsNullOrEmpty(rankUpMessages[e.newRank]))
             {
                 Debug.Log(rankUpMessages[e.newRank]);
@@ -122,10 +123,14 @@ namespace MyGame.Gameplay.Player
             {
                 currentShip.GetComponent<FireUnitComponent>().AddFireUnit();
                 characterData.FireUnitCount++;
+
+                Framework.Notification.NotificationManager.Instance.ShowFeedNotification("FireLevelUp");
             }
             else
             {
                 ChangeShip();
+
+                Framework.Notification.NotificationManager.Instance.ShowFeedNotification("ShipLevelUp");
             }           
         }
 

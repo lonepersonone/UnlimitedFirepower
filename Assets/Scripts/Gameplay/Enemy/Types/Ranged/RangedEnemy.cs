@@ -26,7 +26,7 @@ namespace MyGame.Gameplay.Enemy
                     bullet.Initialize(characterData.WeaponData, moveComponentE.CurrentSpeed, BulletType.Enemy);
                 }
 
-                AudioManager.Instance.PlayEnemyBasicFire();
+                AudioHelper.PlayOneShot(gameObject, AudioIDManager.GetAudioID(Framework.Audio.AudioType.Enemy, AudioAction.Shoot));
 
                 attackComponentE.RecordAttackTime();
             }

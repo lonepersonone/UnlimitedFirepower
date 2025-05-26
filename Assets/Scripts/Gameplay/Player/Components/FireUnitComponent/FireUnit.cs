@@ -14,14 +14,11 @@ namespace MyGame.Gameplay.Player
         Random
     }
 
-
     public class FireUnit : MonoBehaviour
     {
         public Transform[] FirePoints;
 
         private WeaponAttribute weaponData;
-
-        private FireType fireType;
 
         private MoveComponent moveComponent;
         private Collider2D[] hits = new Collider2D[10];
@@ -41,6 +38,7 @@ namespace MyGame.Gameplay.Player
             CircleRaycast();
         }
 
+
         public void Initialize(WeaponAttribute data)
         {
             weaponData = data;
@@ -52,8 +50,6 @@ namespace MyGame.Gameplay.Player
             defaultAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
 
             moveComponent = PlayerController.Instance.GetComponent<MoveComponent>();
-
-            fireType = FireType.Random;
         }
 
         private void StartRandomRotation()
@@ -89,7 +85,7 @@ namespace MyGame.Gameplay.Player
                     bullet.Initialize(weaponData, moveComponent.CurrentSpeed, BulletType.Player);
                 }
 
-                AudioManager.Instance.PlayPlayerLaserSound();
+                PlaySound();
 
                 RecordFireTime();
             }
@@ -105,7 +101,7 @@ namespace MyGame.Gameplay.Player
 
         public bool CanFire()
         {
-            return Time.time - lastFireTime >= weaponData.FireRate;
+            return Time.time - lastFireTime >= weaponData.AttackInterval;
         }
 
         public void RecordFireTime()
@@ -137,6 +133,10 @@ namespace MyGame.Gameplay.Player
             return Physics2D.OverlapCircleNonAlloc(transform.position, weaponData.Range, hits, LayerMask.GetMask("Enemy"));
         }
 
+        private void PlaySound()
+        {
+            AudioHelper.PlayOneShot(gameObject, AudioIDManager.GetAudioID(Framework.Audio.AudioType.Player, AudioAction.Shoot));
+        }
     }
 }
 

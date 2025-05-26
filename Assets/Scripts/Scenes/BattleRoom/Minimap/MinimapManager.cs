@@ -26,6 +26,8 @@ namespace MyGame.Scene.BattleRoom
         public override async Task InitializeAsync(Action<float> onProgress = null)
         {
             await Task.Delay(100);
+
+            IsReady = true;
         }
 
         public void Initialize(Transform player)

@@ -72,6 +72,8 @@ namespace MyGame.Gameplay.Map
             LoadPowerNames();
 
             await Task.Delay(100);
+
+            IsReady = true;
         }
 
         public GalaxyName GetGalaxyName()

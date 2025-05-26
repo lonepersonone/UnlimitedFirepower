@@ -52,6 +52,8 @@ namespace MyGame.Gameplay.Player
 
         public void RemoveUAV(GameObject uavObj)
         {
+            Object.Instantiate(uavData.DiedPrefab).transform.position = uavObj.transform.position;
+
             uavs.Remove(uavObj);
             Destroy(uavObj);
         }

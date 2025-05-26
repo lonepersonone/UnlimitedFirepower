@@ -14,7 +14,6 @@ namespace MyGame.Gameplay.Upgrade
         private float[] values;
         private UpgradeType type;
 
-
         private int index = 0;
         private float total;
         public Action<float> selectAction;

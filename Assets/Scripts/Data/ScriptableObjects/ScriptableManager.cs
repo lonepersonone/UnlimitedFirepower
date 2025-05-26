@@ -14,7 +14,6 @@ namespace MyGame.Data.SO
         private Dictionary<string, CharacterDataSO> characterDict;
         private Dictionary<string, DynamicTextSO> dynamicTextDict;
         private Dictionary<string, UpgradeDataSO> upgradeDict;
-        private Dictionary<string, GalaxyDataSO> galaxyDict;
         private Dictionary<string, SpaceShipDataSO> spaceShipDict;
         private Dictionary<string, WealthDataSO> wealthDict;
 
@@ -48,16 +47,8 @@ namespace MyGame.Data.SO
             upgradeDict = upgradeArray.ToDictionary(c => c.ID, c => c);
             step++;
 
-            // 5. 加载地图资源
-            var galaxyArray = await ResourcesUtil.LoadAllAsync<GalaxyDataSO>("Data/SO/Maps/Galaxies", p =>
-            {
-                onProgress?.Invoke((step + p) / totalSteps);
-            });
-            galaxyDict = galaxyArray.ToDictionary(c => c.ID, c => c);
-            step++;
-
             // 6. 加载地图飞行器资源
-            var spaceShipArray = await ResourcesUtil.LoadAllAsync<SpaceShipDataSO>("Data/SO/Maps", p =>
+            var spaceShipArray = await ResourcesUtil.LoadAllAsync<SpaceShipDataSO>("Data/SO/Levels", p =>
             {
                 onProgress?.Invoke((step + p) / totalSteps);
             });
@@ -81,16 +72,14 @@ namespace MyGame.Data.SO
 
         public UpgradeDataSO GetUpgradeById(string id) { return upgradeDict.ContainsKey(id) ? upgradeDict[id] : null; }
 
-        public GalaxyDataSO GetGalaxyById(string id) { return galaxyDict.ContainsKey(id) ? galaxyDict[id] : null; }
-
         public SpaceShipDataSO GetSpaceShipById(string id) { return spaceShipDict.ContainsKey(id) ? spaceShipDict[id] : null; }
 
         public WealthDataSO GetWealthById(string id) { return wealthDict.ContainsKey(id) ? wealthDict[id] : null; }
 
         public UpgradeDataSO[] GetUpgrades() { return upgradeDict.Values.ToArray(); }
 
-        public GalaxyDataSO[] GetGalaxies() { return galaxyDict.Values.ToArray(); }
     }
+
 }
 
 

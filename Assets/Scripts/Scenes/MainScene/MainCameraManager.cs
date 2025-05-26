@@ -61,7 +61,10 @@ namespace MyGame.Scene.Main
             CreateObserverCamera();
             SelectCamera(CameralType.Map);
             Debug.Log("[MainCameraManager] 初始化完成");
+
             await Task.Delay(100);
+
+            IsReady = true;
         }
 
         // Update is called once per frame
@@ -175,7 +178,9 @@ namespace MyGame.Scene.Main
             }
             lastFov = currentfov;
         }
+
     }
+
 }
 
 

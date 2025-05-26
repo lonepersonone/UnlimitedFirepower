@@ -1,10 +1,6 @@
 using MyGame.Data.SO;
 using MyGame.Framework.Utilities;
-using MyGame.Gameplay.Map;
-using MyGame.Scene.Main;
-using MyGame.UI.Transition;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,65 +10,55 @@ namespace MyGame.Gameplay.Map
     {
         private Dictionary<string, GalaxyAttribute> galaxyDict = new Dictionary<string, GalaxyAttribute>();
 
-        private List<GalaxyAttribute> galaxyLevels = new List<GalaxyAttribute>();
+        private List<GalaxyAttribute> galaxie = new List<GalaxyAttribute>();
         private int currentIndex = -1;
 
         private SpaceShipController spaceShipController;
 
-        public event Action<GalaxyAttribute> OnChanged;
+        public event Action<GalaxyAttribute> OnGalaxyChanged;
 
-        public GalaxyAttribute CurrentGalxy => currentIndex <galaxyLevels.Count ? galaxyLevels[currentIndex] : null;
+        public GalaxyAttribute CurrentGalxy => currentIndex >=0 && currentIndex < galaxie.Count ? galaxie[currentIndex] : null;
 
         public SpaceShipController SpaceShipController => spaceShipController;
 
-        public MapAttribute(ScriptableManager scriptable)
+        public MapAttribute(GameMapConfigSO config)
         {
-            InitialGalaxyDict(scriptable.GetGalaxies());
-            InitialGalaxyLevels();
+            InitialGalaxyDict(config.Galaxies);
 
-            CreateSpaceShip(scriptable.GetSpaceShipById("Basic"));
-
-            EnableNextGalay();
+            CreateSpaceShip(config.SpaceShipDataSO);
         }
 
-        private void InitialGalaxyDict(GalaxyDataSO[] galaxies)
+        private void InitialGalaxyDict(List<GalaxyData> galaxies)
         {
             foreach (var value in galaxies)
             {
                 galaxyDict[value.ID] = new GalaxyAttribute(value);
+                galaxie.Add(galaxyDict[value.ID]);
             }
         }
 
-        private void InitialGalaxyLevels()
+        public GalaxyAttribute GenerateNextGalay()
         {
-            for (int i = 0; i < galaxyDict.Count; i++)
+            if(currentIndex >= 0 && currentIndex < galaxie.Count)
             {
-                galaxyLevels.Add(galaxyDict[i.ToString()]);
+                CurrentGalxy.Destory();
             }
-        }
 
-        public GalaxyAttribute EnableNextGalay()
-        {
-            GalaxyAttribute galaxy = CreateGalaxy();
-            if(galaxy != null)
-            {
-                PlanetController planet = galaxy.GetBirthPlanet();
-                galaxy.SetCurrentPlanet(planet);
-                ResetSpaceShip(planet);
-                OnChanged?.Invoke(galaxy);
-            }
-            return galaxy;
-        }
-
-        private GalaxyAttribute CreateGalaxy()
-        {
             currentIndex++;
-            if (currentIndex >= 1) galaxyLevels[currentIndex - 1].DestoryMap();
-            if (currentIndex < galaxyLevels.Count)
+
+            if(currentIndex < galaxie.Count)
             {
-                GalaxyAttribute galaxy = galaxyLevels[currentIndex].CreateGalaxy();
-                return galaxy;
+                GalaxyAttribute nextGalaxy = galaxie[currentIndex];
+                nextGalaxy.Generate();
+
+                PlanetController planet = nextGalaxy.GetBirthPlanet();
+                ResetSpaceShip(planet);
+
+                OnGalaxyChanged?.Invoke(nextGalaxy);
+
+                return nextGalaxy;
             }
+
             return null;
         }
 
@@ -82,7 +68,6 @@ namespace MyGame.Gameplay.Map
             spaceShipController = instance.GetComponent<SpaceShipController>();
             instance.transform.rotation = TransformUtil.GetLookRotation(instance.transform, Vector3.zero);
             instance.SetActive(false);
-
         }
 
         public void ResetSpaceShip(PlanetController birthPlanet)

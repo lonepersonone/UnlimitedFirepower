@@ -19,15 +19,15 @@ namespace MyGame.Gameplay.Map
             galaxyAttribute = galaxy;
         }
 
-        public void ExploreAroundGalaxy(string id)
+        public void ExploreAroundGalaxy(PlanetController planet)
         {
             List<PlanetController> planets = HexgonUtil.GetHexesInSpiral(
-                galaxyAttribute.PlanetDict, galaxyAttribute.PlanetDict[id].GetIDByInt(), 1);
-            planets.Add(galaxyAttribute.PlanetDict[id]);
+                galaxyAttribute.PlanetDict, planet.GetIDByInt(), 3);
+            planets.Add(planet);
 
-            foreach (PlanetController planet in planets)
+            foreach (PlanetController item in planets)
             {
-                planet.OnExplored();
+                item.OnExplored();
             }
         }
 

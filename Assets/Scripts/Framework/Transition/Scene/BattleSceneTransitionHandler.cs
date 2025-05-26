@@ -50,7 +50,7 @@ namespace MyGame.Framework.Transition
             // 初始化战斗数据
             BattleDataBridge.Instance.InitializeData(
                 MainDataManager.Instance.ScriptableManager,
-                new LevelAttribute(MainDataManager.Instance.MapData.CurrentGalxy.CurrentPlanet.LevelDataSO, 3),
+                new LevelAttribute(MainDataManager.Instance.MapData.CurrentGalxy.CurrentPlanet.LevelData, 3),
                 MainDataManager.Instance.PlayerData,
                 MainDataManager.Instance.UpgradeData,
                 MainDataManager.Instance.WealthData); ;

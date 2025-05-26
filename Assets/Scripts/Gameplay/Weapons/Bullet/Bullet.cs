@@ -29,6 +29,7 @@ namespace MyGame.Gameplay.Weapon
         protected RaycastHit2D[] hits = new RaycastHit2D[10]; //…‰œﬂºÏ≤‚
 
         protected float airPlaneSpeed;
+        private float currentDamage;
 
         private LayerMask layerMask;
 
@@ -41,6 +42,8 @@ namespace MyGame.Gameplay.Weapon
             this.weaponAttribute = weaponAttribute;
             this.airPlaneSpeed = airplaneSpeed;
             InitialMuzzleVFX();
+
+            currentDamage = weaponAttribute.Damage;
         }
 
         private void Start()
@@ -66,16 +69,23 @@ namespace MyGame.Gameplay.Weapon
             {
                 if (Random.Range(0f, 1f) <= weaponAttribute.CriticalProbability)
                 {
-                    bulletDamageable.TakeDamage(DamageType.Critical, weaponAttribute.Damage * weaponAttribute.CriticalRatio);
+                    bulletDamageable.TakeDamage(DamageType.Critical, currentDamage * weaponAttribute.CriticalRatio);
                 }
                     
                 else
                 {
-                    bulletDamageable.TakeDamage(DamageType.Basics, weaponAttribute.Damage);
+                    bulletDamageable.TakeDamage(DamageType.Basics, currentDamage);
                 }                   
             }
 
-            Destroy();
+            if(currentDamage > 1)
+            {
+                currentDamage *= weaponAttribute.AttenuationRatio;
+            }
+            else
+            {
+                Destroy();
+            }           
         }
 
         public virtual void Destroy()

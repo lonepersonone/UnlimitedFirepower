@@ -30,7 +30,7 @@ namespace MyGame.Gameplay.Player
             bullet.Initialize(uav.CharacterData.WeaponData, 0f, BulletType.Player);
         }
 
-        public bool CanFire() { return Time.time - lastFireTime >= uav.CharacterData.WeaponData.FireRate; }
+        public bool CanFire() { return Time.time - lastFireTime >= uav.CharacterData.WeaponData.AttackInterval; }
 
         public void RecordFireTime() { lastFireTime = Time.time; }
 

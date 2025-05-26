@@ -24,6 +24,8 @@ namespace MyGame.Scene.Main
             DisablePause();
 
             await Task.Delay(100);
+
+            IsReady = true;
         }
 
         public void EnablePause() => GameState.Pauseable = true;

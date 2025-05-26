@@ -20,8 +20,10 @@ namespace MyGame.Gameplay.Level
         public static LevelManager Instance;
         
         public GameObject CanvasUpgrade;
-        public TextMeshProUGUI WealthText;
-        public TextMeshProUGUI WaveText;    
+        public GameObject LevelTitleObj;
+
+        public TextMeshProUGUI WaveText;
+        public TextMeshProUGUI SettlementText;
 
         private LevelAttribute levelData;
 
@@ -43,19 +45,22 @@ namespace MyGame.Gameplay.Level
             waveCount = levelData.Waves.Count;
 
             GameEventManager.RegisterListener(GameEventType.BattleStarted, EnableAssault);
+            GameEventManager.RegisterListener(GameEventType.GameOver, GameOver);
 
             await Task.Delay(100);
+
+            IsReady = true;
         }
 
         private void OnDestroy()
         {
             GameEventManager.UnregisterListener(GameEventType.BattleStarted, EnableAssault);
+            GameEventManager.UnregisterListener(GameEventType.GameOver, GameOver);
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(WealthText != null && BattleDataManager.Instance.PlayerWealth != null) UpdateWealthText();
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
@@ -70,6 +75,7 @@ namespace MyGame.Gameplay.Level
                     CanvasUpgrade.SetActive(true);
                 }
             }
+
         }
 
   
@@ -86,9 +92,9 @@ namespace MyGame.Gameplay.Level
             UpdateWaveText();
             StartCoroutine(Assault(levelData.Waves[waveIndex].Enemies));
 
-            Debug.Log("已生成敌人，下一波到达时间：" + levelData.Waves[waveIndex].DelayAfterPreviousWave);
+            Debug.Log("已生成敌人，下一波到达时间：" + levelData.Waves[waveIndex].Delay);
 
-            yield return new WaitForSeconds(levelData.Waves[waveIndex].DelayAfterPreviousWave); 
+            yield return new WaitForSeconds(levelData.Waves[waveIndex].Delay); 
             waveIndex++;
             
 
@@ -104,7 +110,7 @@ namespace MyGame.Gameplay.Level
         {
             foreach (var enemy in enemies)
             {
-                for (int i = 0; i < enemy.BaseCount; i++)
+                for (int i = 0; i < enemy.Count; i++)
                 {
                     CharacterAttribute enemyData = new CharacterAttribute(enemy.Enemy);
 
@@ -142,17 +148,22 @@ namespace MyGame.Gameplay.Level
 
             SceneController.Instance.BattleVictory();           
         }
-
-        private void UpdateWealthText()
-        {
-            float[] wealths = BattleDataManager.Instance.PlayerWealth.Wealths;
-            WealthText.text = $"{wealths[0]}+{wealths[1]}({String.Format("{0:P}", wealths[2])})";
-        }
         
         private void UpdateWaveText()
         {
             waveCount--;
+            if (waveCount == 0)
+            {
+                LevelTitleObj.SetActive(false);
+                return;
+            }           
             WaveText.text = waveCount.ToString();           
+        }
+
+        private void GameOver()
+        {
+            SettlementText.gameObject.SetActive(true);
+            LevelTitleObj.SetActive(false);
         }
 
     }

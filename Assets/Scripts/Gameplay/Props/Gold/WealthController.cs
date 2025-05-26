@@ -25,7 +25,6 @@ namespace MyGame.Gameplay.Prop
             {
                 transform.position = Vector3.MoveTowards(transform.position, target.position, 20 * Time.deltaTime);
                 if (Vector3.Distance(transform.position, target.position) < 0.1f) OnPickedDown();
-
             }
         }
 
@@ -51,7 +50,7 @@ namespace MyGame.Gameplay.Prop
 
         private void OnPickedDown()
         {
-            PlayerExperienceManager.Instance.AddExperience(1);
+            PlayerExperienceManager.Instance.AddExperience(10);
             Destroy(this.gameObject);
         }
 
