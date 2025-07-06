@@ -1,6 +1,10 @@
 # UnlimitedFirepower
 2D太空射击游戏，玩家将不断征服宇宙中强大的星系势力，掠夺他们的资源来强化自身。
 
+## 项目平台
+
+https://liboliang.itch.io/unlimitedfire
+
 ## 快速启动 
 
 git clone --recurse-submodules https://github.com/lonepersonone/UnlimitedFirepower.git  
